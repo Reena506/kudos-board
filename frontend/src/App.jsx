@@ -1,35 +1,131 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { useState } from "react";
+import initialBoards from "./data/boards";
+import BoardList from "./BoardList";
+import NewBoardForm from "./NewBoardForm";
+import BoardDetail from "./BoardDetail";
+import "./App.css";
 
-function App() {
-  const [count, setCount] = useState(0)
+const filters = ["All", "Recent", "Celebration", "Thank You", "Inspiration"];
+
+export default function App() {
+  const [boards, setBoards] = useState(initialBoards);
+  const [activeFilter, setActiveFilter] = useState("All");
+  const [searchQuery, setSearchQuery] = useState("");
+  const [searchActive, setSearchActive] = useState(false);
+  const [showForm, setShowForm] = useState(false);
+  const [selectedBoard, setSelectedBoard] = useState(null);
+
+  const handleDelete = (id) => {
+    setBoards(boards.filter((b) => b.id !== id));
+  };
+
+  const handleSearch = (event) => {
+    event.preventDefault();
+    setSearchActive(searchQuery.trim() !== "");
+  };
+
+  const handleClear = () => {
+    setSearchQuery("");
+    setSearchActive(false);
+  };
+
+  const handleInputChange = (event) => {
+    const value = event.target.value;
+    setSearchQuery(value);
+    if (value === "") setSearchActive(false);
+  };
+
+  const filteredBoards = boards.filter((board) => {
+    const matchesFilter =
+      activeFilter === "All" ||
+      board.category.toLowerCase() === activeFilter.toLowerCase();
+
+    const matchesSearch = board.title
+      .toLowerCase()
+      .includes(searchQuery.toLowerCase());
+
+    return (!searchActive || matchesSearch) && matchesFilter;
+  });
 
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+    <div className="app">
+      <h1 className="title">Kudos Boards</h1>
+
+      {selectedBoard ? (
+        <BoardDetail
+          board={selectedBoard}
+          onBack={() => setSelectedBoard(null)}
+          onUpdateBoard={(updatedBoard) => {
+            setBoards(
+              boards.map((b) => (b.id === updatedBoard.id ? updatedBoard : b))
+            );
+            setSelectedBoard(updatedBoard);
+          }}
+        />
+      ) : (
+        <>
+          {/* Search */}
+          <form onSubmit={handleSearch}>
+            <input
+              className="search-input"
+              type="text"
+              placeholder="Search boards..."
+              value={searchQuery}
+              onChange={handleInputChange}
+            />
+            <button className="search-button" type="submit">
+              Search
+            </button>
+            {searchQuery && (
+              <button type="button" className="clear" onClick={handleClear}>
+                Clear
+              </button>
+            )}
+          </form>
+
+          {/* Filter Buttons */}
+          <div className="filters">
+            {filters.map((filter) => (
+              <button
+                key={filter}
+                className={`filter-btn ${
+                  activeFilter === filter ? "active" : ""
+                }`}
+                onClick={() => setActiveFilter(filter)}
+              >
+                {filter}
+              </button>
+            ))}
+          </div>
+
+          {/* Create Button */}
+          <button onClick={() => setShowForm(true)}>Create New Board</button>
+
+          {/* New Board Form */}
+          {showForm && (
+            <NewBoardForm
+              onAdd={(newBoard) => {
+                setBoards([newBoard, ...boards]);
+                setShowForm(false);
+              }}
+              onCancel={() => setShowForm(false)}
+            />
+          )}
+
+          {/* Board List */}
+          <BoardList
+            boards={filteredBoards}
+            onDelete={handleDelete}
+            onViewBoard={(board) => setSelectedBoard(board)}
+          />
+        </>
+      )}
+        <footer className="footer">
+    <p>By:Reena Vollala</p>
+    </footer>
+    </div>
+  );
+
 }
 
-export default App
+
