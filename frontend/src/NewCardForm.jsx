@@ -1,7 +1,6 @@
 import { useState } from "react";
 
-const GIPHY_API_KEY = "wJPTfmSra7xidFvt6e4lBhwJUcJfJV6R";
-
+const GIPHY_API_KEY = import.meta.env.VITE_GIPHY_API_KEY;
 export default function NewCardForm({ onAddCard }) {
   const [text, setText] = useState("");
   const [gifSearch, setGifSearch] = useState("");
@@ -17,6 +16,7 @@ export default function NewCardForm({ onAddCard }) {
       `https://api.giphy.com/v1/gifs/search?api_key=${GIPHY_API_KEY}&q=${gifSearch}&limit=8`
     );
     const json = await res.json();
+    console.log("Using GIF:", customGifUrl || selectedGif);
     setGifResults(json.data);
   };
 
