@@ -3,7 +3,7 @@ const app = express()
 const PORT = 3000
 
 const routes=require('./routes/boards')
-const routes=require('./routes/cards')
+// const routes=require('./routes/cards')
 
 app.use(express.json())
 app.use('/boards', routes)
