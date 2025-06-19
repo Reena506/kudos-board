@@ -14,21 +14,30 @@ export default function NewBoardForm({ onAdd, onCancel }) {
     setForm({ ...form, [name]: value });
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    const { title, category } = form;
-    if (!title || !category ) {
-      alert("Please fill all required fields.");
-      return;
-    }
-    onAdd({ ...form, id: Date.now(), image });
-    setForm({
-      title: "",
-      // description: "",
-      category: "",
-      author: "",
+  const handleSubmit = async (e) => {
+  e.preventDefault();
+  const { title, category } = form;
+  if (!title || !category) {
+    alert("Please fill all required fields.");
+    return;
+  }
+
+  const newBoard = { ...form, id: Date.now(), image };
+
+  try {
+    const res = await fetch("http://localhost:3000/boards", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(newBoard),
     });
-  };
+    if (!res.ok) throw new Error("Failed to add board");
+    onAdd(newBoard);
+  } catch (err) {
+    console.error(err);
+  }
+};
+
+
 
   return (
     <form className="create-form" onSubmit={handleSubmit}>

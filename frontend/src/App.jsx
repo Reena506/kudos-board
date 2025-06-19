@@ -35,9 +35,23 @@ export default function App() {
   }, []);
 
 
-  const handleDelete = (id) => {
-    setBoards(boards.filter((b) => b.id !== id));
+  const handleDelete = async (boardId) => {
+    try {
+      const res = await fetch(`http://localhost:3000/boards/${boardId}`, {
+        method: "DELETE",
+      });
+
+      if (!res.ok) throw new Error("Failed to delete board");
+
+      setBoards((prevBoards) => prevBoards.filter((b) => b.id !== boardId));
+      if (selectedBoard && selectedBoard.id === boardId) {
+        setSelectedBoard(null);
+      }
+    } catch (err) {
+      console.error("Error deleting board:", err);
+    }
   };
+
 
   const handleSearch = (event) => {
     event.preventDefault();

@@ -28,26 +28,68 @@ const BoardDetail=({ board, onBack, onUpdateBoard }) =>{
 
 
 
-  const handleAddCard = (newCard) => {
-    const updated = { ...board, cards: [newCard, ...cards] };
-    setCards(updated.cards);
-    onUpdateBoard(updated);
+  const handleAddCard = async (boardId, newCard) => {
+    try {
+      console.log(board.id);
+      const res = await fetch(`http://localhost:3000/cards`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({...newCard, boardId}),
+      });
+
+      if (!res.ok) throw new Error("Failed to add card");
+
+    const savedCard = await res.json();
+      setCards((prevCards) => [...prevCards, savedCard]);
+    } catch (err) {
+      console.error("Error adding card:", err);
+    }
   };
 
-  const handleDeleteCard = (id) => {
-    const updated = { ...board, cards: cards.filter((c) => c.id !== id) };
-    setCards(updated.cards);
-    onUpdateBoard(updated);
-  };
 
-  const handleUpvoteCard = (id) => {
-    const updatedCards = cards.map((card) =>
-      card.id === id ? { ...card, upvotes: (card.upvotes || 0) + 1 } : card
+
+
+  const handleDeleteCard = async (id) => {
+  try {
+    const res = await fetch(`http://localhost:3000/cards/${id}`, {
+      method: "DELETE",
+    });
+
+    if (!res.ok) throw new Error("Failed to delete card");
+
+    setCards((prevCards) => prevCards.filter((card) => card.id !== id));
+  } catch (err) {
+    console.error("Error deleting card:", err);
+  }
+};
+
+
+
+
+  const handleUpvoteCard = async (id) => {
+  try {
+    const res = await fetch(`http://localhost:3000/cards/${id}/upvote`, {
+      method: "PATCH",
+    });
+
+    if (!res.ok) throw new Error("Failed to upvote");
+
+    const updatedCard = await res.json();
+
+    setCards((prevCards) =>
+      prevCards.map((card) =>
+        card.id === id ? updatedCard : card
+      )
     );
-    const updated = { ...board, cards: updatedCards };
-    setCards(updatedCards);
-    onUpdateBoard(updated);
-  };
+  } catch (err) {
+    console.error("Error upvoting card:", err);
+  }
+};
+
+
+
 
   return (
     <div className="board-detail">
@@ -57,7 +99,7 @@ const BoardDetail=({ board, onBack, onUpdateBoard }) =>{
       <img src={pic} alt={board.title} className="board-img" />
 
       <h3>Cards</h3>
-      <NewCardForm onAddCard={handleAddCard} />
+      <NewCardForm onAddCard={(newCard)=>handleAddCard(board.id, newCard)} />
       <CardList cards={cards} onDelete={handleDeleteCard} onUpvote={handleUpvoteCard} />
     </div>
   );

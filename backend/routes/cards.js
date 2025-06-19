@@ -62,6 +62,27 @@ const { cardId } = req.params
 
 })
 
+// PATCH /cards/:cardId/upvote
+router.patch('/:cardId/upvote', async (req, res) => {
+  const cardId = parseInt(req.params.cardId);
+
+  try {
+    const updatedCard = await prisma.card.update({
+      where: { id: cardId },
+      data: {
+        upvotes: { increment: 1 },
+      },
+    });
+    res.json(updatedCard);
+  } catch (err) {
+    console.error("Upvote failed:", err);
+    res.status(500).json({ error: "Failed to upvote card" });
+  }
+});
+
+
+
+
 
 router.delete('/:cardId', async(req, res) => {
   const { cardId } = req.params
