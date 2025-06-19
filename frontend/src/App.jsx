@@ -139,7 +139,14 @@ export default function App() {
                 className={`filter-btn ${
                   activeFilter === filter ? "active" : ""
                 }`}
-                onClick={() => handleFilterClick(filter)}
+                onClick={() => {
+                  setActiveFilter(filter);
+                  if (filter === "All") {
+                    fetchData(); // fetch all boards again
+                  } else if (filter === "Recent") {
+                    handleShowRecent(); // fetch only recent
+                  }
+                }}
               >
                 {filter}
               </button>
@@ -174,5 +181,3 @@ export default function App() {
     </div>
   );
 }
-
-
