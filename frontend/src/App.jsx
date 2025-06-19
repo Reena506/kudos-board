@@ -1,8 +1,9 @@
-import { useState } from "react";
+// import { useState } from "react";
 import initialBoards from "./data/boards";
 import BoardList from "./BoardList";
 import NewBoardForm from "./NewBoardForm";
 import BoardDetail from "./BoardDetail";
+import { useState, useEffect } from "react";
 import "./App.css";
 
 const filters = ["All", "Recent", "Celebration", "Thank You", "Inspiration"];
@@ -14,6 +15,25 @@ export default function App() {
   const [searchActive, setSearchActive] = useState(false);
   const [showForm, setShowForm] = useState(false);
   const [selectedBoard, setSelectedBoard] = useState(null);
+
+  const fetchData = async ( ) => {
+    try {
+      const response = await fetch(
+        `http://localhost:3000/boards`
+      );
+      if (!response.ok) throw new Error("Failed to fetch data");
+      const data = await response.json();
+      setBoards(data);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  
+  useEffect(() => {
+    fetchData();
+  }, []);
+
 
   const handleDelete = (id) => {
     setBoards(boards.filter((b) => b.id !== id));

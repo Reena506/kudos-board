@@ -1,10 +1,32 @@
 // BoardDetail.jsx
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import CardList from "./CardList";
 import NewCardForm from "./NewCardForm";
+import pic from "./assets/image.jpeg";
+
+// Inside BoardDetail.jsx
+
 
 const BoardDetail=({ board, onBack, onUpdateBoard }) =>{
   const [cards, setCards] = useState(board.cards || []);
+
+  useEffect(() => {
+  const fetchCards = async () => {
+    try {
+      const res = await fetch(`http://localhost:3000/cards/${board.id}/cards`);
+      if (!res.ok) throw new Error("Failed to fetch cards");
+      const data = await res.json();
+      setCards(data);
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  fetchCards();
+}, [board.id]);
+
+
+
 
   const handleAddCard = (newCard) => {
     const updated = { ...board, cards: [newCard, ...cards] };
@@ -31,8 +53,8 @@ const BoardDetail=({ board, onBack, onUpdateBoard }) =>{
     <div className="board-detail">
       <button onClick={onBack} className="back-button">Back</button>
       <h2>{board.title}</h2>
-      <p>{board.description}</p>
-      <img src={board.image} alt={board.title} className="board-img" />
+      {/* <p>{board.description}</p> */}
+      <img src={pic} alt={board.title} className="board-img" />
 
       <h3>Cards</h3>
       <NewCardForm onAddCard={handleAddCard} />

@@ -17,15 +17,20 @@ datasource db {
 model Board{
   id Int @id @default(autoincrement())
   title String
-  description String
+  // description String
   author String
   category String
+  cards Card[]
 }
 
 model Card{
   id Int @id @default(autoincrement())
-  message String
-  description String
+  text String
+  author String
+  gif String
+  boardId Int 
+  board   Board @relation(fields: [boardId], references: [id])
+  
 }
 
 

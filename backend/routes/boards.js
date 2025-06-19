@@ -25,11 +25,10 @@ res.json(board);
 
 // //creating a pet
 router.post('/', async(req, res) => {
-  const {title, description, author, category } = req.body
+  const {title, author, category } = req.body
   const newBoard=await prisma.board.create({
     data: {
         title,
-        description,
         author,
         category 
     }
@@ -41,12 +40,11 @@ router.post('/', async(req, res) => {
 // //updating a pet
 router.put('/:boardId', async(req, res) => {
 const { boardId } = req.params
-  const {title, description, author, category } = req.body
+  const {title, author, category } = req.body
   const updatedBoard = await prisma.board.update({
     where: { id: parseInt(boardId) },
     data: {
         title,
-        description,
         author,
         category 
     }

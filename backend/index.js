@@ -1,13 +1,15 @@
 const express = require('express')
+const cors = require('cors')
 const app = express()
 const PORT = 3000
 
-const routes=require('./routes/boards')
-// const routes=require('./routes/cards')
+const boardroutes=require('./routes/boards')
+const cardroutes=require('./routes/cards')
 
 app.use(express.json())
-app.use('/boards', routes)
-app.use('/cards', routes)
+app.use(cors())
+app.use('/boards', boardroutes)
+app.use('/cards', cardroutes)
 
 app.get('/', (req, res) => {
   res.send('Welcome to my homepage!')

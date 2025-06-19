@@ -4,7 +4,7 @@ import image from "./assets/image.jpeg"
 export default function NewBoardForm({ onAdd, onCancel }) {
   const [form, setForm] = useState({
     title: "",
-    description: "",
+    // description: "",
     category: "",
     author: "",
   });
@@ -16,15 +16,15 @@ export default function NewBoardForm({ onAdd, onCancel }) {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    const { title, description, category } = form;
-    if (!title || !description || !category ) {
+    const { title, category } = form;
+    if (!title || !category ) {
       alert("Please fill all required fields.");
       return;
     }
     onAdd({ ...form, id: Date.now(), image });
     setForm({
       title: "",
-      description: "",
+      // description: "",
       category: "",
       author: "",
     });
@@ -33,7 +33,7 @@ export default function NewBoardForm({ onAdd, onCancel }) {
   return (
     <form className="create-form" onSubmit={handleSubmit}>
       <input name="title" placeholder="Title*" value={form.title} onChange={handleChange} />
-      <input name="description" placeholder="Description*" value={form.description} onChange={handleChange} />
+      {/* <input name="description" placeholder="Description*" value={form.description} onChange={handleChange} /> */}
       <select name="category" value={form.category} onChange={handleChange}>
         <option value="">Select category*</option>
         {/* <option value="recent">Recent</option> */}

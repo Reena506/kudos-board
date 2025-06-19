@@ -1,8 +1,9 @@
 import "./BoardCard.css";
+import pic from "./assets/image.jpeg";
 const BoardCard=({ board, onDelete, onViewBoard })=>{
   return (
     <div className="board">
-      <img src={board.image} alt={board.title} />
+      <img src={pic} alt={board.title} />
       <h2 >{board.title}</h2>
       {/* <p >{board.description}</p> */}
       <p >By: {board.author}</p>
