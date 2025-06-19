@@ -1,4 +1,4 @@
-// import { useState } from "react";
+// App.jsx
 import initialBoards from "./data/boards";
 import BoardList from "./BoardList";
 import NewBoardForm from "./NewBoardForm";
@@ -16,11 +16,9 @@ export default function App() {
   const [showForm, setShowForm] = useState(false);
   const [selectedBoard, setSelectedBoard] = useState(null);
 
-  const fetchData = async ( ) => {
+  const fetchData = async () => {
     try {
-      const response = await fetch(
-        `http://localhost:3000/boards`
-      );
+      const response = await fetch(`http://localhost:3000/boards`);
       if (!response.ok) throw new Error("Failed to fetch data");
       const data = await response.json();
       setBoards(data);
@@ -29,20 +27,28 @@ export default function App() {
     }
   };
 
-  
+  const handleShowRecent = async () => {
+    try {
+      const res = await fetch("http://localhost:3000/boards/recent");
+      if (!res.ok) throw new Error("Failed to fetch recent boards");
+      const data = await res.json();
+      setBoards(data);
+      setActiveFilter("Recent");
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
   useEffect(() => {
     fetchData();
   }, []);
-
 
   const handleDelete = async (boardId) => {
     try {
       const res = await fetch(`http://localhost:3000/boards/${boardId}`, {
         method: "DELETE",
       });
-
       if (!res.ok) throw new Error("Failed to delete board");
-
       setBoards((prevBoards) => prevBoards.filter((b) => b.id !== boardId));
       if (selectedBoard && selectedBoard.id === boardId) {
         setSelectedBoard(null);
@@ -51,7 +57,6 @@ export default function App() {
       console.error("Error deleting board:", err);
     }
   };
-
 
   const handleSearch = (event) => {
     event.preventDefault();
@@ -69,9 +74,18 @@ export default function App() {
     if (value === "") setSearchActive(false);
   };
 
+  const handleFilterClick = (filter) => {
+    if (filter === "Recent") {
+      handleShowRecent();
+    } else {
+      setActiveFilter(filter);
+    }
+  };
+
   const filteredBoards = boards.filter((board) => {
     const matchesFilter =
       activeFilter === "All" ||
+      activeFilter === "Recent" ||
       board.category.toLowerCase() === activeFilter.toLowerCase();
 
     const matchesSearch = board.title
@@ -125,7 +139,7 @@ export default function App() {
                 className={`filter-btn ${
                   activeFilter === filter ? "active" : ""
                 }`}
-                onClick={() => setActiveFilter(filter)}
+                onClick={() => handleFilterClick(filter)}
               >
                 {filter}
               </button>
@@ -154,12 +168,11 @@ export default function App() {
           />
         </>
       )}
-        <footer className="footer">
-    <p>By:Reena Vollala</p>
-    </footer>
+      <footer className="footer">
+        <p>By: Reena Vollala</p>
+      </footer>
     </div>
   );
-
 }
 
 

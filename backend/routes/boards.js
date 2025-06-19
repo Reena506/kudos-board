@@ -12,6 +12,21 @@ router.get('/', async(req, res)=>{
     
 })
 
+router.get('/recent', async (req, res) => {
+  try {
+    const recentBoards = await prisma.board.findMany({
+      orderBy: {
+        createdAt: 'desc',
+      },
+      take: 6,
+    });
+    res.json(recentBoards);
+  } catch (err) {
+    console.error("Failed to fetch recent boards:", err);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+
 // //retriving a single pet
 router.get('/:boardId', async(req, res) => {
   const boardId = parseInt(req.params.boardId)
@@ -22,6 +37,9 @@ console.log(board)
 res.json(board);
 
 })
+
+
+
 
 // //creating a pet
 router.post('/', async(req, res) => {
