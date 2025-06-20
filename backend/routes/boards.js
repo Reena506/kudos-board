@@ -5,7 +5,6 @@ const prisma=new PrismaClient();
 
 
 router.get('/', async(req, res)=>{
-    // res.json(pets)
     const boards=await prisma.board.findMany();
     console.log(boards)
     res.json(boards);
@@ -27,7 +26,7 @@ router.get('/recent', async (req, res) => {
   }
 });
 
-// //retriving a single pet
+// //retriving a single 
 router.get('/:boardId', async(req, res) => {
   const boardId = parseInt(req.params.boardId)
   const board=await prisma.board.findUnique({
@@ -41,7 +40,7 @@ res.json(board);
 
 
 
-// //creating a pet
+// //creating
 router.post('/', async(req, res) => {
   const {title, author, category } = req.body
   const newBoard=await prisma.board.create({
@@ -55,7 +54,7 @@ router.post('/', async(req, res) => {
   res.status(201).json(newBoard)
 })
 
-// //updating a pet
+// //updating
 router.put('/:boardId', async(req, res) => {
 const { boardId } = req.params
   const {title, author, category } = req.body
@@ -71,17 +70,9 @@ const { boardId } = req.params
 
 })
 
-// //delete a pet
+// //delete 
 router.delete('/:boardId', async(req, res) => {
   const { boardId } = req.params
-// //   const initialLength = pets.length
-// //   pets = pets.filter(pet => pet.id !== parseInt(petId))
-
-// //   if (pets.length < initialLength) {
-// //     res.status(204).send()
-// //   } else {
-// //     res.status(404).send('not found')
-// //   }
   const deletedBoard = await prisma.board.delete({
     where: { id: parseInt(boardId) }
   })
