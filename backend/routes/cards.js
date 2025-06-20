@@ -37,8 +37,8 @@ router.post('/', async(req, res) => {
     data: {
         text,
         gif,
-        author,
-        boardId
+        boardId,
+        author: author || null 
        
     }
   })
