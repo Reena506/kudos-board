@@ -32,7 +32,7 @@ Deployed Application (**required**): [Kudos Board Deployed Site] https://kudos-b
     - [x] Thank you
     - [x] Inspiration
   - [x] When a category is clicked, boards matching the specified category are displayed.
-- [] **Search Functionality**
+- [x] **Search Functionality**
   - [x] Users can use a search bar to search for boards by title on the home page.
   - [x] The search bar should include:
     - [x] Text input field
