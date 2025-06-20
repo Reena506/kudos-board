@@ -1,5 +1,6 @@
 import { useState } from "react";
 import image from "./assets/image.jpeg"
+const BACKEND=import.meta.env.VITE_BACKEND;
 
 export default function NewBoardForm({ onAdd, onCancel }) {
   const [form, setForm] = useState({
@@ -25,7 +26,7 @@ export default function NewBoardForm({ onAdd, onCancel }) {
   const newBoard = { ...form, id: Date.now(), image };
 
   try {
-    const res = await fetch("http://localhost:3000/boards", {
+    const res = await fetch(`${BACKEND}/boards`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(newBoard),

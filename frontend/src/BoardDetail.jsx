@@ -5,7 +5,7 @@ import NewCardForm from "./NewCardForm";
 import pic from "./assets/image.jpeg";
 
 // Inside BoardDetail.jsx
-
+const BACKEND=import.meta.env.VITE_BACKEND;
 
 const BoardDetail=({ board, onBack, onUpdateBoard }) =>{
   const [cards, setCards] = useState(board.cards || []);
@@ -13,7 +13,7 @@ const BoardDetail=({ board, onBack, onUpdateBoard }) =>{
   useEffect(() => {
   const fetchCards = async () => {
     try {
-      const res = await fetch(`http://localhost:3000/cards/${board.id}/cards`);
+      const res = await fetch(`${BACKEND}/cards/${board.id}/cards`);
       if (!res.ok) throw new Error("Failed to fetch cards");
       const data = await res.json();
       setCards(data);
@@ -31,7 +31,7 @@ const BoardDetail=({ board, onBack, onUpdateBoard }) =>{
   const handleAddCard = async (boardId, newCard) => {
     try {
       console.log(board.id);
-      const res = await fetch(`http://localhost:3000/cards`, {
+      const res = await fetch(`${BACKEND}/cards`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -53,7 +53,7 @@ const BoardDetail=({ board, onBack, onUpdateBoard }) =>{
 
   const handleDeleteCard = async (id) => {
   try {
-    const res = await fetch(`http://localhost:3000/cards/${id}`, {
+    const res = await fetch(`${BACKEND}/cards/${id}`, {
       method: "DELETE",
     });
 
@@ -70,7 +70,7 @@ const BoardDetail=({ board, onBack, onUpdateBoard }) =>{
 
   const handleUpvoteCard = async (id) => {
   try {
-    const res = await fetch(`http://localhost:3000/cards/${id}/upvote`, {
+    const res = await fetch(`${BACKEND}/cards/${id}/upvote`, {
       method: "PATCH",
     });
 

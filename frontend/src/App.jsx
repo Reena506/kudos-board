@@ -7,6 +7,7 @@ import { useState, useEffect } from "react";
 import "./App.css";
 
 const filters = ["All", "Recent", "Celebration", "Thank You", "Inspiration"];
+const BACKEND=import.meta.env.VITE_BACKEND;
 
 export default function App() {
   const [boards, setBoards] = useState(initialBoards);
@@ -18,7 +19,7 @@ export default function App() {
 
   const fetchData = async () => {
     try {
-      const response = await fetch(`http://localhost:3000/boards`);
+      const response = await fetch(`${BACKEND}/boards`);
       if (!response.ok) throw new Error("Failed to fetch data");
       const data = await response.json();
       setBoards(data);
@@ -29,7 +30,7 @@ export default function App() {
 
   const handleShowRecent = async () => {
     try {
-      const res = await fetch("http://localhost:3000/boards/recent");
+      const res = await fetch(`${BACKEND}/boards/recent`);
       if (!res.ok) throw new Error("Failed to fetch recent boards");
       const data = await res.json();
       setBoards(data);
@@ -45,7 +46,7 @@ export default function App() {
 
   const handleDelete = async (boardId) => {
     try {
-      const res = await fetch(`http://localhost:3000/boards/${boardId}`, {
+      const res = await fetch(`${BACKEND}/boards/${boardId}`, {
         method: "DELETE",
       });
       if (!res.ok) throw new Error("Failed to delete board");
